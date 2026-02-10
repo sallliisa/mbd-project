@@ -1,0 +1,86 @@
+@startuml
+hide circle
+skinparam linetype ortho
+
+entity Department {
+  * department_id : INT <<PK>>
+  --
+  name : VARCHAR(100)
+  manager_employee_id : INT <<FK, nullable>>
+}
+
+entity Employee {
+  * employee_id : INT <<PK>>
+  --
+  first_name : VARCHAR(50)
+  last_name : VARCHAR(50)
+  email : VARCHAR(150) <<UNIQUE>>
+  hire_date : DATE
+  job_title : VARCHAR(100)
+  salary : DECIMAL(12,2)
+  department_id : INT <<FK>>
+}
+
+entity Client {
+  * client_id : INT <<PK>>
+  --
+  name : VARCHAR(150)
+  industry : VARCHAR(100)
+  contact_name : VARCHAR(100)
+  contact_email : VARCHAR(150)
+  contact_phone : VARCHAR(30)
+}
+
+entity Project {
+  * project_id : INT <<PK>>
+  --
+  client_id : INT <<FK>>
+  name : VARCHAR(150)
+  description : TEXT
+  start_date : DATE
+  end_date : DATE
+  status : VARCHAR(30)
+  budget : DECIMAL(12,2)
+}
+
+entity Employee_Project {
+  * employee_id : INT <<FK, PK>>
+  * project_id : INT <<FK, PK>>
+  * assignment_start_date : DATE <<PK>>
+  --
+  role_on_project : VARCHAR(100)
+  allocation_percent : DECIMAL(5,2)
+  assignment_end_date : DATE
+}
+
+entity Timesheet {
+  * timesheet_id : INT <<PK>>
+  --
+  employee_id : INT <<FK>>
+  project_id : INT <<FK>>
+  work_date : DATE
+  hours : DECIMAL(4,2)
+  billable_flag : BOOLEAN
+  notes : TEXT
+}
+
+entity Invoice {
+  * invoice_id : INT <<PK>>
+  --
+  project_id : INT <<FK>>
+  invoice_date : DATE
+  amount : DECIMAL(12,2)
+  status : VARCHAR(30)
+  notes : TEXT
+}
+
+Department ||--o{ Employee : has
+Employee |o--|| Department : manages
+Client ||--o{ Project : owns
+Employee ||--o{ Employee_Project : assigned_to
+Project ||--o{ Employee_Project : staffed_by
+Employee ||--o{ Timesheet : submits
+Project ||--o{ Timesheet : records
+Project ||--o{ Invoice : billed_by
+
+@enduml
