@@ -98,6 +98,21 @@ CREATE TABLE Invoice (
     FOREIGN KEY (project_id) REFERENCES Project(project_id)
 );
 
+CREATE INDEX idx_project_status_end_date
+  ON Project (status, end_date);
+
+CREATE INDEX idx_invoice_project_invoice_date
+  ON Invoice (project_id, invoice_date);
+
+CREATE INDEX idx_timesheet_employee_work_date
+  ON Timesheet (employee_id, work_date);
+
+CREATE INDEX idx_timesheet_project_work_date_billable
+  ON Timesheet (project_id, work_date, billable_flag);
+
+CREATE INDEX idx_employee_project_project_dates
+  ON Employee_Project (project_id, assignment_start_date, assignment_end_date);
+
 -- Seed Department (100 rows)
 INSERT INTO Department (department_id, name, manager_employee_id) VALUES (1, 'Department 001', NULL);
 INSERT INTO Department (department_id, name, manager_employee_id) VALUES (2, 'Department 002', NULL);
@@ -3405,4 +3420,3 @@ INSERT INTO Invoice (invoice_id, project_id, invoice_date, amount, status, notes
 INSERT INTO Invoice (invoice_id, project_id, invoice_date, amount, status, notes) VALUES (220, 47, '2023-08-02', 75161.00, 'paid', 'Invoice note 220');
 
 COMMIT;
-
